@@ -12,13 +12,13 @@ As the story goes, I was working with my RPG map editor that I had just made, an
 ## Feature Summary
 
 * Non-asynchronous: Super simple two function interface, where you pass in a few options and can expect it to work.
-* Async event functions available as well.
 * Support for converting "Real" decimals to ints automatically.
 * Support for compressed files.
 * Detects simple arrays versus complex mono-structured and heterogynous arrays. By default, optimizes for "arrays of identical structures" to avoid needing to repeat key value pairs in the file, overcomplicating the structure of the data buffer.
 * Support for .bak automatic backup. (when overwriting)
 * Support for .bak.X where X is an incremental backup that is automatically incremented for providing multiple previous version backups. (when overwriting)
-* Comprehensive test suite demonstrates all features.
+* Async event versions of the read and write functions included.
+* Comprehensive test suite demonstrates all features (except the async functions).
 
 ## Considerations
 
@@ -48,7 +48,7 @@ TBD
 
 ## Function Documentation
 
-#### "Interface" Functions
+### "Interface" Functions
 
 ``BSONWrite(data, filename, compress=true, nobackup=true, multibackup=false, clear_existing=false, support_u64=false, support_realint=false, assume_hetero=false )``
 
@@ -108,7 +108,7 @@ Call this function to trigger the ``buffer_save_async`` Asyncronous Event, note 
 ```BSONWrite_Async_Event( filename, buffer )```
 Concludes the post-writing handling of the buffer inside the Asyncronous Event, should be passed the same filename and the buffer id from the variable ``async_load``.
 
-#### "Internal" Functions
+### "Internal" Functions
 
 ``BSONCopyFile( filenamea, filenameb )``
 
