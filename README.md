@@ -19,6 +19,7 @@ As the story goes, I was working with my RPG map editor that I had just made, an
 * By default, optimizes for "arrays of structure" to avoid needing to repeat key value pairs in the file, overcomplicating the structure of the data buffer.
 * Support for .bak automatic backup. (when overwriting)
 * Support for .bak.X where X is an incremental backup that is automatically incremented for providing multiple previous version backups. (when overwriting)
+* Comprehensive test suite demonstrates all features.
 
 ## Considerations
 
