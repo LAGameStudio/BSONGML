@@ -135,7 +135,7 @@ function BSON_Tests() {
 		report += "\n";
 	}
 	
-	show_message( "BSONWrite Report\n------------------\n" + report );
+	show_debug_message( "BSONWrite Report\n------------------\n" + report );
 	
 	report = "";
 	for ( var i=0; i<wlen; i++ ) {
@@ -155,7 +155,7 @@ function BSON_Tests() {
 		}
 	}
 
-	show_message( "BSONRead Report\n------------------\n" + report );
+	show_debug_message( "BSONRead Report\n------------------\n" + report );
 
 }
 
