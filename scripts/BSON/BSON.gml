@@ -705,8 +705,7 @@ function BSONDeepCompare( A,B, support_u64=false, support_realint=false, assume_
 	return BSONDeepCompareNode(A,B, support_u64, support_realint, assume_hetero );
 }
 
-
-
+//// ASYNC FUNCTIONS
 
 function BSONRead_Async( filename ) {
 	
@@ -715,7 +714,7 @@ function BSONRead_Async( filename ) {
 	if ( not file_exists(filename) ) return { data: default_data, error: BSONRead_file_not_found };
 
 	// Generate the outgoing data buffer.
-	try { buffer = buffer_load_async(filename); } catch(e) {
+	try { buffer = buffer_create(256, buffer_grow, 1); buffer_load_async(buffer,filename,0,-1); } catch(e) {
 		 return { data: default_data, caught: e, error: BSONRead_fail_buffer_load };
 	}
 
@@ -832,7 +831,7 @@ function BSONWrite_Async(data, filename, compress=true, nobackup=true, multiback
 	}
 	// Save the buffer
 	try {
-		buffer_save_async(buffer,filename);
+		buffer_save_async(buffer,filename,0,-1);
 	} catch(e) {
 		buffer_delete(buffer);
 		return { error: BSONWrite_fail_buffer_save };
