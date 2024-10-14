@@ -88,6 +88,26 @@ Peforms a deep comparison between to data structs, and returns _true_ when ident
 
 _Please note use of the ``support_u64`` feature will cause a false negative (appears not identical) when an int64 appears in the data.  It seems though, despite this, the data was read properly from the file._
 
+#### "Asynchronous" Functions
+
+Please be aware that these provided asyncronous implementations are merely suggestions.  You may need to further engineer these functions for the performance and visual feedback you desire.
+
+For Reading
+
+``BSONRead_Async( filename )``
+Call this function to trigger the ``buffer_load_async`` Asyncronous Event, which will provide a buffer id in the variable ``async_load``. 
+
+Inside the Asyncronous Event, use this function:
+``BSONRead_Async_Event( buffer, decompress=false, support_u64=false, support_realint=false, assume_hetero=false )``
+
+For Writing
+
+``BSONWrite_Async(data, filename, compress=true, nobackup=true, multibackup=false, clear_existing=false, support_u64=false, support_realint=false, assume_hetero=false )``
+Call this function to trigger the ``buffer_save_async`` Asyncronous Event, note that unlike reading, the preparation is not asyncronous.  You can therefore call this function within another async event. 
+
+```BSONWrite_Async_Event( filename, buffer )```
+Concludes the post-writing handling of the buffer inside the Asyncronous Event, should be passed the same filename and the buffer id from the variable ``async_load``.
+
 #### "Internal" Functions
 
 ``BSONCopyFile( filenamea, filenameb )``
