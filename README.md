@@ -15,8 +15,7 @@ As the story goes, I was working with my RPG map editor that I had just made, an
 * Async event functions available as well.
 * Support for converting "Real" decimals to ints automatically.
 * Support for compressed files.
-* Detects simple arrays versus complex mono-structured and heterogynous arrays.
-* By default, optimizes for "arrays of identical structure" to avoid needing to repeat key value pairs in the file, overcomplicating the structure of the data buffer.
+* Detects simple arrays versus complex mono-structured and heterogynous arrays. By default, optimizes for "arrays of identical structures" to avoid needing to repeat key value pairs in the file, overcomplicating the structure of the data buffer.
 * Support for .bak automatic backup. (when overwriting)
 * Support for .bak.X where X is an incremental backup that is automatically incremented for providing multiple previous version backups. (when overwriting)
 * Comprehensive test suite demonstrates all features.
