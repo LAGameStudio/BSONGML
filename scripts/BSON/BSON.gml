@@ -704,3 +704,144 @@ function BSONDeepCompareNode( a,b, support_u64=false, support_realint=false, ass
 function BSONDeepCompare( A,B, support_u64=false, support_realint=false, assume_hetero=false ) {
 	return BSONDeepCompareNode(A,B, support_u64, support_realint, assume_hetero );
 }
+
+
+
+
+function BSONRead_Async( filename ) {
+	
+	var buffer=-1,default_data=noone,header="",footer="";
+
+	if ( not file_exists(filename) ) return { data: default_data, error: BSONRead_file_not_found };
+
+	// Generate the outgoing data buffer.
+	try { buffer = buffer_load_async(filename); } catch(e) {
+		 return { data: default_data, caught: e, error: BSONRead_fail_buffer_load };
+	}
+
+}
+
+// Call from your async function
+function BSONRead_Async_Event( buffer, decompress=false, support_u64=false, support_realint=false, assume_hetero=false ) {
+	
+	// Decompress
+	if ( decompress ) {
+		var compressed;
+		try {
+			compressed=buffer;
+			buffer = buffer_decompress(compressed);
+		} catch(e) {
+			buffer_delete(compressed);
+			return { data: default_data, caught: e, error: BSONRead_fail_decompress };
+		}			
+		buffer_delete(compressed);
+	}
+	
+	// Seek the buffer start position, seems superfluous
+	buffer_seek(buffer, buffer_seek_start, 0);
+	
+	// Read the file header
+	try {
+		header=buffer_read(buffer, buffer_string);
+	} catch (e) {
+		buffer_delete(buffer);
+		return { data: default_data, caught: e, error: BSONRead_fail_read_header };
+	}
+	if ( header != "BSONGML" ) {
+		buffer_delete(buffer);
+		return { data: default_data, caught: e, error: BSONRead_fail_read_header };
+	}
+	
+	// Recursively read all nodes
+	var result = BSONReadNode( buffer, support_u64, support_realint, assume_hetero );
+	if ( result.error != BSONWrite_success ) {
+		buffer_delete(buffer);
+		return { data: result.data, error: BSONRead_fail_read_node, returned: result };
+	}
+	
+	// Read the file footer
+	try { footer=buffer_read(buffer, buffer_string); } catch (e) {
+		buffer_delete(buffer);
+		return { data: result.data, caught: e, error: BSONRead_fail_read_footer };
+	}
+	if ( footer != "EOFBSONGML" ) {
+		buffer_delete(buffer);
+		return { data: result.data, error: BSONRead_fail_read_footer };
+	}
+	
+	buffer_delete(buffer);
+	
+	return { data: result.data, error: BSONWrite_success };
+}
+
+
+
+function BSONWrite_Async(data, filename, compress=true, nobackup=true, multibackup=false, clear_existing=false, support_u64=false, support_realint=false, assume_hetero=false ){
+	
+	// Maintain a single or multi-backup scenario
+	if (!nobackup and file_exists(filename)) {
+		var backupname=filename+".bak";
+		if (multibackup) {
+			var i=0;
+			while ( file_exists(filename+".bak."+string_format(i,1,0)) ) i++;
+			backupname += "."+string_format(i,1,0);
+		}
+		BSONCopyFile(filename,backupname);
+	}
+	
+	var buffer=-1,preexisting=false;
+	
+	// Check if the file is validly named
+	try { preexisting = file_exists(filename); } catch(e) {
+		return { error: BSONWrite_fail_filename };	}
+	
+	// Generate the outgoing data buffer.
+	try { buffer = buffer_create(256, buffer_grow, 1); } catch(e) {
+		return { error: BSONWrite_fail_buffer_create };
+	}
+	
+	// Seek the buffer start position, seems superfluous
+	buffer_seek(buffer, buffer_seek_start, 0);
+	// Write the file header
+	buffer_write(buffer, buffer_string, "BSONGML");
+	// Recursively write all nodes
+	var result = BSONWriteNode( buffer, data, support_u64, support_realint, assume_hetero );
+	// Fast exist if error
+	if ( result.error != BSONWrite_success ) {
+		buffer_delete(buffer);
+		return { error: BSONWrite_fail_write_node, result: result };
+	}
+	// Write the file footer
+	buffer_write(buffer, buffer_string, "EOFBSONGML");	
+	// Write the outgoing data buffer
+	if ( compress ) {
+		var compressed=-1;
+		// Compress the buffer
+		try {
+			compressed=buffer_compress(buffer,0,buffer_tell(buffer));
+			buffer_delete(buffer);
+			buffer=compressed;
+		} catch(e) {
+			buffer_delete(buffer);
+			return { error: BSONWrite_fail_buffer_compress };
+		}
+	}
+	// Clear any pre-existing file, prepare to write.
+	if ( clear_existing ) try {	if ( preexisting ) file_delete(filename); } catch(e) {
+		return { error: BSONWrite_fail_file_bin_rewrite };
+	}
+	// Save the buffer
+	try {
+		buffer_save_async(buffer,filename);
+	} catch(e) {
+		buffer_delete(buffer);
+		return { error: BSONWrite_fail_buffer_save };
+	}
+		
+	return { error: BSONWrite_success };
+}
+
+function BSONWrite_Async_Event( buffer, filename ) {
+	buffer_delete(buffer);
+	return { error: BSONWrite_success };
+}
