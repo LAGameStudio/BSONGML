@@ -5,7 +5,9 @@ As always, if you use this library, we'd love it if you mentioned us in your gam
 
 ## Rationale
 
-This library was created to resolve issues I discovered using json_stringify().  As the story goes, I was working with an editor I had just made and it seemed to be fine.  One aspect of the data was a large array of structures.  At some point using this editor, I was not aware of a file lock created by Windows, resulting in a zero length file, or perhaps a failure in json_stringify where it failed without a try..catch and returned an empty string, which it then saved.  Fed up with this need, I created this reusable library since I often want to create a "level file format" or a "save game file format" but don't want to write a unique proprietary format each time.
+This library was created to resolve issues I discovered using json_stringify().  I noticed other binary file libraries on Github also use json_stringify() and I wanted to write something closer to a BSON implementation so that I could make sure it didn't run into the various issues one might face using json_stringify() ... I also wanted to support ".bak" and ".bak.0" ... OS-style file automatic backups.
+
+As the story goes, I was working with an editor I had just made and it seemed to be fine.  One aspect of the data was a large array of structures.  At some point using this editor, I was not aware of a file lock created by Windows, resulting in a zero length file, or perhaps a failure in json_stringify where it failed without a try..catch and returned an empty string, which it then saved.  Fed up with this need, I created this reusable library since I often want to create a "level file format" or a "save game file format" but don't want to write a unique proprietary format each time.
 
 ## Feature Summary
 
