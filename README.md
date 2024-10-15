@@ -1,7 +1,7 @@
 # BSONGML
 A modern gamemaker language implementation of simple, robust and performant buffering of large complex structured mixed-type data stored in binary files that resolves issues with json_stringify.
 
-As always, if you use this library, we'd love it if you mentioned us in your game credits as LostAstronaut.com and Lost Astronaut Studios.
+As always, if you use this library, we'd love it if you starred this repo and mentioned us in your game credits as LostAstronaut.com and Lost Astronaut Studios.
 
 ## Rationale
 
