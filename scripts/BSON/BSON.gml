@@ -458,7 +458,7 @@ function BSONReadErrorString( code ) {
 }
 
 function BSONReadNode( buffer, support_u64=false, support_realint=false, assume_hetero=false, calldepth=0 ) {
-	if ( calldepth > BSON_MAX_DEPTH ) return { data: data, error: BSONRead_fail_beyond_depth, MAX_DEPTH: BSON_MAX_DEPTH, calldepth: calldepth };
+	if ( calldepth > BSON_MAX_DEPTH ) return { data: noone, error: BSONRead_fail_beyond_depth, MAX_DEPTH: BSON_MAX_DEPTH, calldepth: calldepth };
 	var data=noone;
 	// Read the type of the data
 	var type=-1;
